@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Download, Github, Linkedin, ChevronDown, MapPin } from "lucide-react";
 import { personalInfo } from "../../lib/config";
@@ -8,6 +8,41 @@ import { Button } from "../ui/Button";
 import { motion } from "framer-motion";
 
 export const Hero: React.FC = () => {
+  const fullText = `Hi, I'm ${personalInfo.name}`;
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+
+  const startTypingAnimation = useCallback(() => {
+    setDisplayedText("");
+    setIsTyping(true);
+    let currentIndex = 0;
+
+    const typingInterval = setInterval(() => {
+      if (currentIndex < fullText.length) {
+        setDisplayedText(fullText.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+        setIsTyping(false);
+      }
+    }, 80);
+
+    return typingInterval;
+  }, [fullText]);
+
+  useEffect(() => {
+    const typingInterval = startTypingAnimation();
+
+    const repeatInterval = setInterval(() => {
+      startTypingAnimation();
+    }, 15000);
+
+    return () => {
+      clearInterval(typingInterval);
+      clearInterval(repeatInterval);
+    };
+  }, [startTypingAnimation]);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -31,10 +66,15 @@ export const Hero: React.FC = () => {
             className="flex-1 text-center lg:text-left"
           >
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              <span className="text-foreground">Hi, I'm </span>
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                {personalInfo.name}
+              <span className="text-foreground">
+                {displayedText.slice(0, 8)}
               </span>
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {displayedText.slice(8)}
+              </span>
+              <span
+                className="inline-block w-[4px] h-[0.9em] bg-primary ml-1 align-middle animate-blink"
+              />
             </h1>
 
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-muted-foreground mb-4">
@@ -46,11 +86,11 @@ export const Hero: React.FC = () => {
               <span className="text-lg">{personalInfo.location}</span>
             </div>
 
-            <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl">
               {personalInfo.tagline}
             </p>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-20">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-8">
               <Button
                 variant="primary"
                 onClick={() => window.open(personalInfo.resumeUrl, "_blank")}
@@ -75,10 +115,10 @@ export const Hero: React.FC = () => {
                   href={personalInfo.social.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
+                  className="w-12 h-12 rounded-full border-2 border-muted-foreground flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:scale-110 transition-all duration-300"
                   aria-label="GitHub"
                 >
-                  <Github size={28} />
+                  <Github size={24} />
                 </a>
               )}
               {personalInfo.social.linkedin && (
@@ -86,10 +126,10 @@ export const Hero: React.FC = () => {
                   href={personalInfo.social.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-300"
+                  className="w-12 h-12 rounded-full border-2 border-muted-foreground flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:scale-110 transition-all duration-300"
                   aria-label="LinkedIn"
                 >
-                  <Linkedin size={28} />
+                  <Linkedin size={24} />
                 </a>
               )}
             </div>

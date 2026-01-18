@@ -8,7 +8,7 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = ({ children, className = "", hover = false }) => {
   const hoverStyles = hover
-    ? "hover:shadow-2xl hover:-translate-y-1 hover:border-accent cursor-pointer"
+    ? "hover:shadow-2xl hover:-translate-y-1 hover:border-accent"
     : "";
 
   return (
