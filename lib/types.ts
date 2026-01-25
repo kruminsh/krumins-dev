@@ -29,15 +29,23 @@ export interface Experience {
 }
 
 // Technical Skills
-export interface Skill {
+export type SkillType = "professional" | "personal";
+
+export interface TechSkill {
+  id: string;
   name: string;
-  rating: 1 | 2 | 3 | 4 | 5;
-  category: string;
+  type: SkillType;
+  logo: string;
+  description: string;
+  highlights?: string[];
+  relatedExperience?: string[];
 }
 
-export interface SkillCategory {
+export interface SkillGroup {
+  id: SkillType;
   title: string;
-  skills: Skill[];
+  description: string;
+  skills: TechSkill[];
 }
 
 // Education & Certifications
